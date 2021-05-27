@@ -1,0 +1,1451 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+#SIMPLILEARN PROJECT 
+#DOMAIN--EDUCATION
+data=read.csv(file.choose())
+head(data)
+```
+
+```{r}
+#Analysis Tasks: Analyze the historical data and determine the key drivers for admission.
+#LETS START WITH GRE---	Graduate Record Exam Scores
+library(ggplot2)
+qplot(data$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+```
+
+```{r}
+#SO GRE FOLLOWS A NORMAL DISTURBUTION
+
+```
+
+
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+#SO WE WILL CREATE META DATAFRAME
+data_1=filter(data,admit==1)
+data_2=filter(data,admit==0)
+qplot(data_1$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores who got admiited in colleges",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+qplot(data_2$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores who got didn't got  admiited in colleges",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+
+```
+```{r}
+summary(data_1$gre)
+summary(data_2$gre)
+```
+
+```{r}
+# VERY IMPORTANT POINTS REGARDING ADMISSION IN COLLEGES --
+#1.MEAN SCORE OF STUDENTS WHO GOT ADMITTED IN COLLEGES IS 618.9 
+#2.MEAN SCORE OF STUDENTS WHO GOT ADMITTED IN COLLEGES IS  573.2
+#3.TO GET ADMISSION YOU MUST SCORE A MINIMUM OF 300 MARKS BELOW THAT CHANCES ARE VERY LESS
+```
+
+```{r}
+data$admit=as.factor(data$admit)
+
+```
+
+```{r}
+ggplot(data, aes(x=gre, color=admit,fill=admit)) +
+  geom_histogram(alpha=0.2,position="identity")+
+labs(x="Gre",
+         y="Count", 
+       title="Distribution of Gre with admit ")+  
+theme_bw()+
+theme(plot.title = element_text(size=22)
+      ,axis.text.x= element_text(size=15),
+       axis.text.y= element_text(size=15),
+        axis.title=element_text(size=18))
+```
+
+```{r}
+# NO FIXED PATTERN COULD BE SEEN SO ALONG WITH GRE OTHER FEATURES ARE ALSO EQUALLY IMPORTANT
+```
+
+```{r}
+#LETS SEE HOW GRE AND GPA ARE REALTED
+cor(data$gre,data$gpa)
+ggplot(data,aes(gre,gpa,color=admit))+geom_point(shape=19)+labs(colour="admit")+xlab("Graduate Record Exam Scores")+ylab("Grade Point Average")+ggtitle("scatter plot b/w gre and gpa")
+```
+```{r}
+# A CORRLELATION OF ABOUT  0.3842659 IS SEEN BUT NO FIXED PATTERN COULD BE SEEN WITH REGARD TO COLUMN ADMIT
+```
+
+
+```{r}
+#SES refers to socioeconomic status: 1 - low, 2 - medium, 3 - high.
+data$ses=as.factor(data$ses)
+ggplot(data, aes(x=gre, color=ses,fill=ses)) +
+  geom_histogram(alpha=0.2,position="identity")+
+labs(x="Gre",
+         y="Count", 
+       title="Distribution of Gre with ses ")+  
+theme_bw()+
+theme(plot.title = element_text(size=22)
+      ,axis.text.x= element_text(size=15),
+       axis.text.y= element_text(size=15),
+        axis.title=element_text(size=18))
+```
+
+```{r}
+#THIS GRAPH IS SLIGHTLY DIFFICULT TO ANALYZE TO LETS SEE THE EFFECT OF SES CATEGORY WISE
+data_1=filter(data,ses==1)
+data_2=filter(data,ses==2)
+data_3=filter(data,ses==3)
+qplot(data_1$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores whose ses is low",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+qplot(data_2$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores whose ses is medium",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+qplot(data_3$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores whose ses is high",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+mean(data_1$gre)
+mean(data_2$gre)
+mean(data_3$gre)
+
+```
+```{r}
+# SOCIAL ECONOMIC STATUS DOESN'T HAVE MUCH IMPACT ON GRE QUITE VISIBLE FROM INDIVIDUAL GRAPHS AND AS WELL AD COMPLETE GRAPH
+```
+
+```{r}
+#LETS SEE HOW GRE AND GENDER ARE REALTED 
+#Gender_male (0, 1) = 0 -> Female, 1 -> Male
+data$Gender_Male=as.factor(data$Gender_Male)
+ggplot(data, aes(x=gre, color=Gender_Male,fill=Gender_Male)) +
+  geom_histogram(alpha=0.2,position="identity")+
+labs(x="Gre",
+         y="Count", 
+       title="Distribution of Gre with gender ")+  
+theme_bw()+
+theme(plot.title = element_text(size=22)
+      ,axis.text.x= element_text(size=15),
+       axis.text.y= element_text(size=15),
+        axis.title=element_text(size=18))
+```
+
+```{r}
+#LETS SEE AT FOR BOTH GENDERS HOW THE DISTURBUTION LOOKS LIKE 
+data_1=filter(data,Gender_Male==1)
+data_2=filter(data,Gender_Male==0)
+qplot(data_1$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores for male",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+qplot(data_2$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores for female",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+mean(data_1$gre)
+mean(data_2$gre)
+```
+
+```{r}
+#SO GENDER DOESN'T HAVE MUCH IMPACT ON GRE SCORES 
+```
+
+
+```{r}
+# LETS SEE HOE GRE AND RACE ARE RELATED
+#	Race – 1, 2, and 3 represent Hispanic, Asian, and African-American 
+data$Race=as.factor(data$Race)
+ggplot(data, aes(x=gre, color=Race,fill=Race)) +
+  geom_histogram(alpha=0.2,position="identity")+
+labs(x="Gre",
+         y="Count", 
+       title="Distribution of Gre with race ")+  
+theme_bw()+
+theme(plot.title = element_text(size=22)
+      ,axis.text.x= element_text(size=15),
+       axis.text.y= element_text(size=15),
+        axis.title=element_text(size=18))
+```
+
+```{r}
+#LETS SEE FOR INDIVIDUAL RACES HOW GRE MARKS ARE REALTED
+data_1=filter(data,Race==1)
+data_2=filter(data,Race==2)
+data_3=filter(data,Race==3)
+qplot(data_1$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores who are Hispanic,",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+qplot(data_2$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores who are Asian",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+qplot(data_3$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores who are African-American ",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+mean(data_1$gre)
+mean(data_2$gre)
+mean(data_3$gre)
+```
+```{r}
+# SO GRE AND RACE ARE ALSO NOT REALTED
+
+```
+
+```{r}
+#LETS CHECK HOW GRE AND RANK ARE REALTED
+#	It refers to the prestige of the undergraduate institution.
+#The variable rank takes on the values 1 through 4. Institutions with a rank of 1 have the highest prestige, while those with a rank of 4 have the lowest.
+data$rank=as.factor(data$rank)
+ggplot(data, aes(x=gre, color=rank,fill=rank)) +
+  geom_histogram(alpha=0.2,position="identity")+
+labs(x="Gre",
+         y="Count", 
+       title="Distribution of Gre with rank ")+  
+theme_bw()+
+theme(plot.title = element_text(size=22)
+      ,axis.text.x= element_text(size=15),
+       axis.text.y= element_text(size=15),
+        axis.title=element_text(size=18))
+```
+
+```{r}
+data_1=filter(data,rank==1)
+data_2=filter(data,rank==2)
+data_3=filter(data,rank==3)
+data_4=filter(data,rank==4)
+qplot(data_1$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores who are  FROM TOP UNIVERSITY,",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+qplot(data_2$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores who are FROM GOOD UNIVERSITY",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+qplot(data_3$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores who are FROM AVERAGRE UNIVERSITY ",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+qplot(data_4$gre,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores who are FROM LOW GRADE UNIVERSITY ",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+mean(data_1$gre)
+mean(data_2$gre)
+mean(data_3$gre)
+mean(data_4$gre)
+```
+
+```{r}
+# A VERY IMPORTANT FINDING 
+#THE PEOPLE FROM TOP UNIVERSITIES SCORE AN AVERAGE GPE OF 611 WHICH IS HIGHER THAN ALL  KINDS OF UNIVERSITY
+#THE PEOPLE FROM LOW UNIVERSITIES SCORE AN AVERAGE OF  570.1493
+```
+
+
+```{r}
+#LETS ANALYZE GPA ---GRADING POINT AVERAGE
+qplot(data$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading point average  Scores",xlab='Grading point average',ylab='frequency',fill=I("pink"))
+```
+
+```{r}
+#A NORMAL DISTURBUTION IS SEEN
+
+```
+
+```{r}
+#GPA VS ADMIT
+data_1=filter(data,admit==1)
+data_2=filter(data,admit==0)
+qplot(data_1$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading point average Scores who got admiited in colleges",xlab='Grading point average  Scores',ylab='frequency',fill=I("pink"))
+qplot(data_2$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading point average  Scores who got didn't got  admiited in colleges",xlab='Grading point average  Scores',ylab='frequency',fill=I("pink"))
+mean(data_1$gpa)
+mean(data_2$gpa)
+```
+
+```{r}
+#SO STUDENTS WHO GET ADMITTED HAVE SLIGHTLY HIGHER GPA THEN THOSE WHO DON'T GET ADMISSION
+```
+
+```{r}
+ggplot(data, aes(x=gpa, color=admit,fill=admit)) +
+  geom_histogram(alpha=0.2,position="identity")+
+labs(x="Gpa",
+         y="Count", 
+       title="Distribution of Gpa with admit ")+  
+theme_bw()+
+theme(plot.title = element_text(size=22)
+      ,axis.text.x= element_text(size=15),
+       axis.text.y= element_text(size=15),
+        axis.title=element_text(size=18))
+```
+
+```{r}
+#NOT MUCH CAN BE INFERED BY THE GRAPH
+```
+
+```{r}
+#SES refers to socioeconomic status: 1 - low, 2 - medium, 3 - high.
+ggplot(data, aes(x=gpa, color=ses,fill=ses)) +
+  geom_histogram(alpha=0.2,position="identity")+
+labs(x="Gpa",
+         y="Count", 
+       title="Distribution of Gpa with ses ")+  
+theme_bw()+
+theme(plot.title = element_text(size=22)
+      ,axis.text.x= element_text(size=15),
+       axis.text.y= element_text(size=15),
+        axis.title=element_text(size=18))
+```
+```{r}
+data_1=filter(data,ses==1)
+data_2=filter(data,ses==2)
+data_3=filter(data,ses==3)
+qplot(data_1$gpa,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores whose ses is low",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+qplot(data_2$gpa,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores whose ses is medium",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+qplot(data_3$gpa,geom="histogram",colour=I("blue"),main="histogram for Graduate Record Exam Scores whose ses is high",xlab='Graduate Record Exam Scores',ylab='frequency',fill=I("pink"))
+mean(data_1$gre)
+mean(data_2$gre)
+mean(data_3$gre)
+```
+
+
+```{r}
+#THE PEOPLE WHO HAVE THEIR SOCIAL ECONOMIC STATUS  AS MEDIUM ARE HAVING MAXIMUM AVERAGE GPA
+
+```
+
+```{r}
+#LETS SEE HOW GPA AND GENDER ARE REALTED 
+#Gender_male (0, 1) = 0 -> Female, 1 -> Male
+
+ggplot(data, aes(x=gpa, color=Gender_Male,fill=Gender_Male)) +
+  geom_histogram(alpha=0.2,position="identity")+
+labs(x="Gpa",
+         y="Count", 
+       title="Distribution of Gpa with gender ")+  
+theme_bw()+
+theme(plot.title = element_text(size=22)
+      ,axis.text.x= element_text(size=15),
+       axis.text.y= element_text(size=15),
+        axis.title=element_text(size=18))
+```
+```{r}
+data_1=filter(data,Gender_Male==1)
+data_2=filter(data,Gender_Male==0)
+qplot(data_1$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading average  Scores for male",xlab='Grading point average Scores',ylab='frequency',fill=I("pink"))
+qplot(data_2$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading average  Scores for female",xlab='Grading point average Scores',ylab='frequency',fill=I("pink"))
+mean(data_1$gre)
+mean(data_2$gre)
+```
+```{r}
+#SO BOTH GENDERS SCORE EQUAL GPA ON AVERAGE 
+```
+
+
+
+```{r}
+#LETS SEE THE EFFECT OF GPA ON RACE 
+library(dplyr)
+library(ggplot2)
+data_1=filter(data,Race==1)
+data_2=filter(data,Race==2)
+data_3=filter(data,Race==3)
+qplot(data_1$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading point average Scores who are Hispanic",xlab='Grading point averageScores',ylab='frequency',fill=I("pink"))
+qplot(data_2$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading point average Scores who are Asian",xlab='Grading point averageScores',ylab='frequency',fill=I("pink"))
+qplot(data_3$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading point average Scores who are African-American ",xlab='Grading point average Scores',ylab='frequency',fill=I("pink"))
+mean(data_1$gpa)
+mean(data_2$gpa)
+mean(data_3$gpa)
+
+```
+
+```{r}
+#AFRO AFRICAN STUDENTS HAVE SLIGHTLY HIGHER GPA(AVERAGE)
+
+```
+
+```{r}
+#LETS ANALYZE GPA AND RANK
+data_1=filter(data,rank==1)
+data_2=filter(data,rank==2)
+data_3=filter(data,rank==3)
+data_4=filter(data,rank==4)
+qplot(data_1$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading point average Scores who are  FROM TOP UNIVERSITY,",xlab='Grading point average Scores',ylab='frequency',fill=I("pink"))
+qplot(data_2$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading point average Scores who are FROM GOOD UNIVERSITY",xlab='Grading point average Scores',ylab='frequency',fill=I("pink"))
+qplot(data_3$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading point average Scores who are FROM AVERAGRE UNIVERSITY ",xlab='Grading point average Scores',ylab='frequency',fill=I("pink"))
+qplot(data_4$gpa,geom="histogram",colour=I("blue"),main="histogram for Grading point average Scores who are FROM LOW GRADE UNIVERSITY ",xlab='Grading point average Scores',ylab='frequency',fill=I("pink"))
+mean(data_1$gre)
+mean(data_2$gre)
+mean(data_3$gre)
+mean(data_4$gre)
+```
+
+```{r}
+#SO CANDIDATES FROM The highest prestige INSTITIUTE HAVING HIGHER GPA(AVEARGE)
+```
+
+```{r}
+View(data)
+```
+
+```{r}
+#LETS ANALYZE SES--	SES refers to socioeconomic status: 1 - low, 2 - medium, 3 - high.
+qplot(data$ses,geom="bar",fill=I("blue"),colour=I("red"),xlab = "socioeconomic status",ylab="count",main="disturburtion of SES in dataset")
+```
+```{r}
+#all classes are quite balanced 
+
+```
+
+```{r}
+z=table(data$admit,data$ses)
+z
+
+```
+
+```{r}
+barplot(z,xlab = "social economic status",ylab="count",main="analysis of social economic classes with admission",col=c("blue","red"))
+```
+
+```{r}
+#GRAPH GIVES A PICTURE NO SOCIO_ECONOMIC_STATUS IS GIVEN ANY BENIFIT,BUT LETS IN PERCENTAGE TERMS
+poor_class_selection_rate=(46/(46+86))*100
+medium_class_selection_rate=(43/(96+43))*100
+high_class_selection_rate=(38/(38+91))*100
+A=data.frame(poor_class_selection_rate,medium_class_selection_rate,high_class_selection_rate)
+A
+```
+```{r}
+#SO ALL PERCENTAGE ARE ALMOST EQUAL BUT HIGHER POOR_CLASS_SELECTION_RATE IS SEEN
+#WILL LATER RUN STATISTICAL TESTS TO DETERMINE EFFECT
+```
+
+```{r}
+#SES VS GENDER 
+z_1=table(data$Gender_Male,data$ses)
+z_1
+```
+
+```{r}
+barplot(z_1,xlab = "social economic status",ylab="count",main="analysis of social economic classes with gender",col=c("blue","red"))
+```
+
+```{r}
+#quite a balance is seen between social economic status and gender is seen
+
+```
+
+```{r}
+#SES VS RACE 
+z_2=table(data$Race,data$ses)
+z_2
+```
+
+```{r}
+barplot(z_2,xlab = "social economic status",ylab="count",main="analysis of social economic classes with gender",col=c("blue","red","pink"))
+```
+```{r}
+#AGAIN QUITE A BALANCE IS SEEN
+#SO RACE AND SOCIAL ECONOMIC STATUS ARE EQUALLY DIVIDED AND THUS NO BIAS IS SEEN
+
+```
+
+```{r}
+#SES VS RANK
+z_3=table(data$rank,data$ses)
+z_3
+
+
+```
+
+```{r}
+barplot(z_3,xlab = "social economic status",ylab="count",main="analysis of social economic classes with gender",col=c("blue","red","pink","orange"))
+```
+
+```{r}
+#FROM THE GRAPH AGAIN A BALANCED SCENRIO IS SEEN BUT Prestige CLASS IS LESS WHEN COMPARING WITH OTHER CLASSES
+
+```
+
+```{r}
+#NOW LETS US GO FOR GENDER_MALE COLUMN 
+qplot(data$Gender_Male,geom="bar",fill=I("blue"),colour=I("red"),xlab = "GENDER COLUMN status",ylab="count",main="disturburtion of SES in dataset")
+```
+
+```{r}
+#ALMOST EQUAL DIVISION OF CLASSES IS SEEN
+```
+
+
+```{r}
+#GENDER_MALE vs ADMIT
+k=table(data$admit,data$Gender_Male)
+k
+```
+
+```{r}
+barplot(k,xlab = "gender",ylab="count",main="analysis of gender with admit",col=c("blue","red"))
+```
+
+```{r}
+#EQUAL PERCENATAGE OF SELECTION WITH GENDER IS SEEN 
+#THE GRAPH MAKES IT CLEAR NO GENDER BIAS IS SEEN
+```
+
+
+
+```{r}
+#NOW WE WILL HAVE TO IS GENDER AND RACE RELATED IN ANY SENSE
+```
+
+```{r}
+a=table(data$Race,data$Gender_Male)
+a
+```
+
+```{r}
+barplot(a,xlab = "gender",ylab="count",main="analysis of gender with Race",col=c("blue","red","green"))
+```
+
+```{r}
+#AGAIN A BALANCE BETWEEN GENDER AND RACE IS SEEN NO BIASEDNESS IS SEEN
+```
+
+```{r}
+#LETS SEE HOW GENDER AND RANK ARE REALTED
+b=table(data$rank,data$Gender_Male)
+barplot(b,xlab = "gender",ylab="count",main="analysis of gender with rank",col=c("blue","red","pink","green"))
+```
+
+```{r}
+b
+```
+```{r}
+#MOST MALES BELONG TO A GOOD COLLEGE OF RANK 2 
+#MOST FEMALES BELONG TO A GOOD/MEDIUM COLLEGE OF RANK 2 AND RANK 3
+```
+
+```{r}
+#LETS SEE HOW RACE AND RANK ARE RELATED
+p=table(data$Race,data$rank)
+p
+```
+
+```{r}
+barplot(p,xlab = "rank",ylab="count",main="analysis of rank with race",col=c("blue","red","green"))
+```
+
+```{r}
+library(ggplot2)
+qplot(data$Race,geom="bar",fill=I("blue"),colour=I("red"),xlab = "Race",ylab="count",main="disturburtion of Race in dataset")
+```
+```{r}
+qplot(data$rank,geom="bar",fill=I("blue"),colour=I("red"),xlab = "Race",ylab="count",main="disturburtion of Rank in dataset")
+```
+```{r}
+#HERE WE HAVE RACE 2 I.E Asian DOMINATING THE DATASET
+```
+
+```{r}
+#NOW WE HAVE DONE UNIVARIATE ANALYSIS AS WELL BIVARIATE ANALYSIS
+```
+
+```{r}
+#------MAIN PROBLEM--------------------
+#Analyze the historical data and determine the key drivers for admission
+```
+
+```{r}
+#BETWEEN ADMIT AND GRE---------
+#1.MEAN SCORE OF STUDENTS WHO GOT ADMITTED IN COLLEGES IS 618.9
+#2.MEAN SCORE OF STUDENTS WHO GOT ADMITTED IN COLLEGES IS  573.2
+#BETWEEN ADMIT AND GPA---------
+#1.STUDENTS WHO GET ADMITTED HAVE SLIGHTLY HIGHER GPA THEN THOSE WHO DON'T GET ADMISSION
+
+```
+
+```{r}
+#LETS RUN A CHISQUARE TEST TO SEE ARE ADMIT AND SES RELATED
+#HO--SOCIAL ECONOMIC CLASS AND CHANGES OF GETTING ADMIT HAVE NO RELATION B/W THEM
+p=table(data$ses,data$admit)
+chisq.test(p)
+#SO HERE P VALUE IS 0.6249 THUS WE ACCEPT HO 
+#SO ADMIT AND ECONOMIC CLASS HAVE NO RELATION BETWEEN THEM
+```
+
+```{r}
+#ADMIT AND GENDER
+#LETS AGAIN RUN A CHI SQUARE TEST  TEST
+#HO--THERE IS NO RELATIONSHIP BETWEEN ADMIT AND GENDER
+k=table(data$Gender_Male,data$admit)
+chisq.test(k)
+#SINCE THE P VALUE IS GREATER THAN 1 WE MAY CONCLUDE THAT GENDER AND ADMIT HAVE NO RELATIONSHIP
+```
+
+```{r}
+#ADMIT AND RACE 
+#LETS AGAIN RUN A TEST FOR CHISQUARE TEST
+#HO--THERE IS NO RELATIONSHIP BETWEEN ADMIT AND RACE
+p=table(data$Race,data$admit)
+chisq.test(p)
+#SO P VALUE IS GREATER THAN 0.5 SO WE ACCEPT HO
+#SO THERE IS NO RELATIONSHIP BETWEEEN ADMIT AND RACE
+```
+
+```{r}
+#LETS ANALYZE RANK AND ADMIT 
+p=table(data$rank,data$admit)
+p
+barplot(p,xlab = "rank",ylab="count",main="analysis of rank with admit",col=c("blue","red","pink","green"))
+```
+
+
+```{r}
+#LETS US RUN CHISQUARE TEST ALSO 
+chisq.test(p)
+```
+```{r}
+#SINCE THE P VALUE IS 0 SO WE REJECT HO SO RANK HAS A EFFECT ON ADMISSION
+```
+
+```{r}
+#SO KEY DRIVERS FOR ADMISSION-
+#1.MEAN SCORE OF STUDENTS WHO GOT ADMITTED IN COLLEGES IS 618.9
+#2.HIGHER GPA ALSO SLIGLY INCREASES THE CHANCES OF GETTING ADMISSION
+#3.SO RANK HAS A EFFECT ON ADMISSION
+```
+
+```{r}
+###--------ANALYSIS PART DONE-------------------
+```
+
+
+```{r}
+#Predictive: 
+
+#1.Find the missing values. (if any, perform missing value treatment)
+summary(data)
+#NO MISSING VALUES CAN BE SEEN
+```
+```{r}
+#2.Find outliers (if any, then perform outlier treatment)
+#WE ONLY HAVE TWO CONTIONIUS VARIABLES LETS CHECK FOR OUTLIERS
+boxplot(data$gre,col="blue")
+boxplot(data$gpa,col="pink")
+#SO BOTH COLUMNS HAVE OUTLIERS
+```
+```{r}
+#OUTLIER TREATMENT
+out=boxplot.stats(data$gre)$out
+out_ind=which(data$gre %in% c(out))
+#VALUE AT INDEX 72 AND 180 AND 316 IS 300
+#VALUE AT INDEX 305 IS 220
+#WILL REPLACE THE OUTLIER WITH MEAN
+data$gre[out_ind]=mean(data$gre)
+```
+
+```{r}
+#LETS CHECK ARE OUTLIERS FROM THE COLUMN GRE REMOVED OR NOT
+boxplot(data$gre,col="blue")
+#SO U CAN SEE THAT THE OUTLIERS ARE REMOVED
+```
+```{r}
+#LETS US PERFORM OUTLIER TREATMENT IN GPA
+out=boxplot.stats(data$gpa)$out
+out_ind=which(data$gpa %in% c(out))
+#WILL REPLACE THE OUTLIER WITH MEAN
+data$gpa[out_ind]=mean(data$gpa)
+boxplot(data$gpa,col="pink")
+```
+```{r}
+#--------------------------------------OUTLIER TREATMENT DONE--------------------------------
+```
+
+```{r}
+#Find the structure of the data set and if required, transform the numeric data type to factor and vice-versa.
+#WILL CONVERT CATAGORICAL COLUMNS TO FACTOR
+data$admit=as.factor(data$admit)
+data$ses=as.factor(data$ses)
+data$Gender_Male=as.factor(data$Gender_Male)
+data$Race=as.factor(data$Race)
+data$rank=as.factor(data$rank)
+
+```
+
+```{r}
+#data structure
+str(data)
+#factor format is to reduce data redundancy and to save a lot of space in the memory.
+```
+
+```{r}
+#Find whether the data is normally distributed or not. Use the plot to determine the same. 
+```
+
+```{r}
+#SO WE HAVE TWO CONTINIOUS VARIABLES
+library(PASWR2)
+eda(data$gre)
+```
+```{r}
+#SO WE CAN SEE THAT GRE IS NORMALLY DISTURBUTED
+```
+
+```{r}
+eda(data$gpa)
+```
+```{r}
+# GPA IS ALSO NORMAL 
+#SLIGHT DEVATION IS SEEN WHAT IS REAL LIFE NOTHING IS FULLY """NORMAL"""\
+```
+
+```{r}
+#Normalize the data if not normally distributed.
+#-----DATA IS ALREADY NORMAL VISIBLE FROM ABOVE PLOTS----------------
+```
+
+```{r}
+#Use variable reduction techniques to identify significant variables
+#WILL USE PCA (BUT THE DATASET IS VERY SMALL)
+#ALWAYS REMEMBER PCA UNSUPERVISED TECHNIQUE SO LETS DROP ADMIT COLUMN FOR A WHILE
+library(dplyr)
+str(data)
+
+```
+```{r}
+data_2=select(data,gre,gpa)
+pca=prcomp(data_2,center = TRUE,scale. = TRUE)
+summary(pca)
+
+```
+```{r}
+#HERE WE DON'T HAVE MANY FEATURES 
+#USING DIMENSIONALITY TECHINIQUES WON'T MAKE ANY GOOD TO THE ANALYSIS
+#ALSO WE HAVE MANY CATAGORICAL COLUMNS WHICH DON'T HAVE ANY VARIANCE AS SUCH IF I COVERT THEM INTO BINARY ALSO IT WOULD BE BIASED SINCE MOST COLUMNS EXCEPT RANK/SES AND SES ARE ON A NOMINAL SCALE 
+#ALSO FROM STAISTICAL ANALYSIS WE COULD  SEEHOW SOME COLUMNS REALLY DON'T HAVE MUCH IMPACT ON ADMIT COLUMN
+
+```
+
+```{r}
+#Run logistic model to determine the factors that influence the admission process of a student (Drop insignificant variables) 
+#LETS TRY A MODEL WITHOUT DROPPING INSIGNIFICANT VARIABLE
+data=read.csv(file.choose())
+View(data)
+
+
+```
+
+```{r}
+results <- fastDummies::dummy_cols(data, select_columns = "Race")
+```
+
+```{r}
+head(results)
+```
+
+```{r}
+results=results[,-6]
+```
+
+```{r}
+head(results)
+```
+```{r}
+#LETS DROP race_3 column as well
+```
+
+```{r}
+results=results[,-9]
+head(results)
+```
+```{r}
+#TRAIN TEST SPLIT
+library(caTools)
+set.seed(0)
+split=sample.split(results,SplitRatio = 0.8)
+training_set=subset(results,split==TRUE)
+test_set=subset(results,split==FALSE)
+```
+
+```{r}
+head(results)
+```
+```{r}
+glm.fit <- glm(admit~., data = results, family = binomial)
+```
+
+```{r}
+glm.probs <- predict(glm.fit,type = "response")
+glm.probs[1:5]
+```
+
+
+```{r}
+glm.pred <- ifelse(glm.probs > 0.5, 0,1)
+```
+
+```{r}
+z=table(glm.pred,results$admit)
+z
+
+```
+
+```{r}
+accuracy=(23+92)/(23+35+250+92)
+accuracy
+```
+```{r}
+#THIS IS MODEL WITH 29% ACCURACY LETS DROP insignificant variables
+```
+
+```{r}
+#RANK,GRA,GPE WILL BE CONSIDERED
+library(dplyr)
+results=select(results,admit,gre,gpa,rank)
+glm.fit <- glm(admit~., data = results, family = binomial)
+```
+
+```{r}
+glm.probs <- predict(glm.fit,type = "response")
+```
+
+```{r}
+glm.pred <- ifelse(glm.probs > 0.5, 0,1)
+```
+
+```{r}
+z=table(glm.pred,results$admit)
+z
+```
+```{r}
+accuracy_1=(98+20)/(253+20+29+98)
+accuracy_1
+```
+
+```{r}
+# A SLIGHT INREASE IN ACCURACY IS SEEN
+```
+
+```{r}
+table(data$admit)
+```
+
+```{r}
+#ONE CAN SEE WE HAVE A UNBALANCED DATASET 
+```
+
+```{r}
+percenatage_of_occurance_of_class_0=273/(273+127)
+percenatage_of_occurance_of_class_1=127/(273+127)
+percenatage_of_occurance_of_class_0
+percenatage_of_occurance_of_class_1
+```
+
+```{r}
+#WITHOUT DOING MUCH LETS A RANDOM FOREST AS WELL SO SEE HOW MODEL IS PERFORMING 
+library(randomForest)
+```
+
+```{r}
+library(caTools)
+set.seed(0)
+split=sample.split(results,SplitRatio = 0.8)
+training_set=subset(results,split==TRUE)
+test_set=subset(results,split==FALSE)
+```
+
+```{r}
+library(caret)
+```
+
+```{r}
+model=randomForest(as.factor(admit)~.,data=training_set,ntree=50)
+```
+
+
+```{r}
+y_pred=predict(model,test_set)
+```
+
+```{r}
+table(y_pred,test_set$admit)
+```
+
+```{r}
+accuracy=(66+6)/(66+20+8+6)
+accuracy
+```
+```{r}
+# SO HERE WE GET A DECENT ACCURACY OF TESTING DATA WITH RANDOM FOREST WHICH IS GOOD SIGN
+```
+
+```{r}
+#NOTE---THE ABOVE RANDOM FOREST MODEL HAS BEEN TRAINED ON ONLY 3 FEATURES WHICH WE FOUND SIGNIFICANT
+#1.GPA,GRA,RANK
+#LETS SCALE GPA AND RE RUN THE MODEL
+#IT SHOULD MAKE A DIFFRENCE IN ACCURACY BUT STILL LETS TRY
+```
+
+```{r}
+results$gpa=scale(results$gpa)
+
+```
+
+```{r}
+model=randomForest(as.factor(admit)~.,data=training_set,ntree=50)
+```
+
+```{r}
+y_pred=predict(model,test_set)
+```
+
+```{r}
+K=table(y_pred,test_set$admit)
+K
+```
+
+```{r}
+accuracy=(68+8)/(68+18+6+8)
+accuracy
+```
+
+```{r}
+#SO A RANDOM FOREST MODEL IS GIVING US A  ACCURACY OF 76%
+```
+
+```{r}
+#LETS TRAIN A MODEL WITH ALL FEATURES TO CHECK
+data=read.csv(file.choose())
+head(data)
+```
+```{r}
+data=fastDummies::dummy_cols(data, select_columns = "Race")
+
+```
+
+```{r}
+head(data)
+```
+```{r}
+data=data[,-6]
+```
+
+```{r}
+head(data)
+```
+```{r}
+data=data[,-9]
+head(data)
+```
+```{r}
+library(caTools)
+set.seed(0)
+split=sample.split(data,SplitRatio = 0.8)
+training_set=subset(data,split==TRUE)
+test_set=subset(data,split==FALSE)
+```
+
+```{r}
+model=randomForest(as.factor(admit)~.,data=training_set,ntree=50)
+```
+
+```{r}
+y_pred=predict(model,test_set)
+```
+
+```{r}
+table(y_pred,test_set$admit)
+```
+
+```{r}
+accuracy=(65+8)/(65+21+6+8)
+accuracy
+```
+
+```{r}
+#so clearly adding features which are reductant doesn't make any target matrix any better
+```
+
+```{r}
+prop.table(table(data$admit))
+```
+
+```{r}
+#SO EVEN IF WE MAKE A RANDOM GUESS OF 0 WE WILL CORRECT 69% OF THE TIMES
+#SO OUR BASELINE ACCURACY IS 69%
+#OUR RANDOM FOREST MODEL IS GIVING A ACCURACY OF 75%
+```
+
+```{r}
+#SINCE U CAN THAT THE DATASET IS UNBALANCED SO WE WILL USE SAMPLING TECHINQUES TO CHECK MODEL EVALUATION
+```
+
+```{r}
+head(results)
+```
+```{r}
+data=results
+```
+
+```{r}
+set.seed(123)
+ind <- sample(2, nrow(data), replace = TRUE, prob = c(0.7, 0.3))
+train <- data[ind==1,]
+test <- data[ind==2,]
+```
+
+```{r}
+table(train$admit)
+```
+
+```{r}
+library(ROSE) 
+over <- ovun.sample(admit~., data = train, method = "over", N = 376)$data
+table(over$admit)
+summary(over)
+```
+
+```{r}
+
+rfover <- randomForest(as.factor(admit)~., data = over,)
+
+```
+
+```{r}
+y_pred=predict(rfover,test)
+```
+
+```{r}
+Z=table(y_pred,test$admit)
+Z
+```
+
+```{r}
+accuracy=(58+13)/(58+17+27+13)
+accuracy
+```
+
+```{r}
+#WE GET A ACCURACY LESS THAN THAT OF BASE MODEL
+#LETS UNDERSTAND THINGS LITTLE BETTER
+
+```
+
+```{r}
+# UNDERSTANDING THINGS A IN A BETTER WAY 
+#CONFUSION MATRIX WHICH GIVES A ACCURACY OF 76%
+K
+accuracy_for_random_forest=(68+8)/(68+18+6+8)
+accuracy_for_random_forest
+
+```
+```{r}
+#IMPORATANT METRICS FOR RANDOM_FOREST_METHOD
+TP=8
+TN=68
+FP=6
+FN=18
+accuracy=(TP+TN)/(TP+TN+FP+FN)
+accuracy
+specificity=TN/(TN+FP)
+specificity
+sensitiviy_aka_recall=TP/(TP+FN)
+sensitiviy_aka_recall
+precision=TP/(FP+TP)
+precision
+F1_score=2*(sensitiviy_aka_recall)*(precision)/(sensitiviy_aka_recall+precision)
+F1_score
+```
+
+```{r}
+#RANDOM FOREST MODEL WITH OVERSAMPLING
+#CONFUSION MATRIX
+Z
+```
+
+```{r}
+TP=15
+TN=56
+FN=15
+FP=29
+accuracy_of_random_forest_with_oversampling=(TP+TN)/(TP+TN+FP+FN)
+accuracy_of_random_forest_with_oversampling
+specificity=TN/(TN+FP)
+specificity
+sensitiviy_aka_recall_of_radnom_forest_with_oversampling=TP/(TP+FN)
+sensitiviy_aka_recall_of_radnom_forest_with_oversampling
+precision=TP/(FP+TP)
+precision
+F1_score=2*(sensitiviy_aka_recall)*(precision)/(sensitiviy_aka_recall+precision)
+F1_score
+```
+
+```{r}
+#BEFORE UNDERSTANDING THEM LITTLE FURTHER LETS THINK WHAT WE WANT--
+#1.WE DON'T WANT A DESERVING STUDENT TO MISS OUT ON ADMISSION 
+#2.WE DON'T WANT A NON-DESERVING STUDENT TO GET AN ADMISSION 
+#3.OR WHATEVER SUBJECT/DOMAIN EXPERT TELLS US TO 
+#I FELL THE MOST IMPORTANT MATRIX IS (WE DON'T WANT A DESERVING STUDENT TO MISS OUT ON ADMISSION) I.E CLASS 1 SHOULD BE IDENTIFIED MORE CORRECTLY 
+#SO SENSITIVITY SHOULD BE HIGH
+#SO OVER SAMPLING MODEL HAS BETTER SENSITIVITY THEN BASE RANDOM FOREST MODEL
+```
+
+```{r}
+#Calculate the accuracy of the model and run validation techniques.
+#ACCURACY AND OTHER MATRIX FOR TWO MODELS WERE CALCULATED ABOVE
+#1.RANDOM FOREST WITH IMPORATANT FEATURES
+#2.RANDOM FOREST WITH IMPORTANT FEATURES AND OVERSAMPLING (TO INCREASE SENSITIVITY)
+
+```
+
+```{r}
+#validation techniques
+#K FOLD CROSS VALIDATION
+library(caret)
+model=train(as.factor(admit)~.,results,method="rf",trControl=trainControl(method="cv",number = 10,verboseIter = TRUE))
+
+```
+
+```{r}
+model
+```
+```{r}
+#SO USING K FOLD CROSS VALIDATION YOU CAN SEE THAT WE GET A ACCUARACT OF 67% 
+#AS DISCUSSED ABOVE WE CAN'T CONCLUDE ANYTHING ON ACCURACY 
+#I TARGETED SENSITIVITY
+#OTHERS CAN BE TARGETTED BASED ON BUSSINESS REQUIREMENTS
+```
+
+
+```{r}
+#LETS TRY A BOOSTING TECHNIQUE WITH 10 FOLD CROSS VALIDATION
+model=train(as.factor(admit)~.,results,method="adaboost",trControl=trainControl(method="cv",number = 10,verboseIter = TRUE))
+```
+```{r}
+model
+```
+```{r}
+# SOMEWHAT ACCUARCY CAN BE SEEN 
+```
+
+```{r}
+#Try other modelling techniques like decision tree and SVM and select a champion model 
+```
+
+```{r}
+head(results)
+```
+
+```{r}
+#DECISION TREE
+library(rpart)
+library(rpart.plot)
+set.seed(0)
+split=sample.split(results,SplitRatio = 0.8)
+training_set=subset(results,split==TRUE)
+test_set=subset(results,split==FALSE)
+
+```
+
+```{r}
+classtree=rpart(admit~.,data=training_set,method = 'class',control=rpart.control(maxdepth = 5))
+```
+
+```{r}
+rpart.plot(classtree,box.palette = "RdBu",digits=-3)
+```
+```{r}
+test_set$pred=predict(classtree,test_set,type = "class")
+```
+
+```{r}
+table(test_set$pred,test_set$admit)
+```
+
+```{r}
+accuracy_for_decision_tree=(63+5)/(63+21+11+5)
+accuracy_for_decision_tree
+```
+```{r}
+#IMPORATANT METRICS FOR DECISION_TREE
+TP=5
+TN=63
+FP=11
+FN=21
+accuracy=(TP+TN)/(TP+TN+FP+FN)
+accuracy
+specificity=TN/(TN+FP)
+specificity
+sensitiviy_aka_recall=TP/(TP+FN)
+sensitiviy_aka_recall
+precision=TP/(FP+TP)
+precision
+F1_score=2*(sensitiviy_aka_recall)*(precision)/(sensitiviy_aka_recall+precision)
+F1_score
+```
+```{r}
+#AGAIN ACCURACY AND SPECIFICITY ARE FINE BUT POOR SENSITIVITY CAN BE SEEN
+```
+
+```{r}
+head(results)
+```
+```{r}
+#SVM  model
+library(caTools)
+set.seed(0)
+split =sample.split(results,SplitRatio = 0.8)
+trainc = subset(results,split == TRUE)
+testc = subset(results,split == FALSE)
+
+```
+
+```{r}
+str(data)
+```
+
+```{r}
+data$admit=as.factor(data$admit)
+
+```
+
+```{r}
+library(e1071)
+classifier = svm(formula = admit ~ .,
+                 data = trainc,
+                 type = 'C-classification',
+                 kernel = 'linear' )
+```
+
+```{r}
+y_pred=predict(classifier,testc)
+
+```
+
+```{r}
+z=table(y_pred,testc$admit)
+z
+```
+
+```{r}
+#ACCURACY
+accuracy_of_svm=74/100
+accuracy_of_svm
+```
+
+```{r}
+#THIS MODEL TO MANY MIGHT SEEM GOOD BUT HAS 0 TP I.E SENSITIVITY IS 0 
+#NO USE OF THIS MODEL
+#IF SOMEONE WANTS TO TARGET SPECIFICITY THEN U MAY GO WITH IT
+```
+
+```{r}
+# LETS RUN A SVM MODEL WITH POLYNOMIAL KERNEL
+classifier = svm(formula = admit ~ .,
+                 data = trainc,
+                 type = 'C-classification',
+                 kernel = 'polynomial' )
+```
+
+```{r}
+y_pred=predict(classifier,testc)
+```
+
+```{r}
+y_pred=predict(classifier,testc)
+```
+
+```{r}
+z=table(y_pred,testc$admit)
+z
+```
+
+```{r}
+#ACCURACY
+accuracy_of_svm_with_polynomial_kernel=(72+3)/(72+3+23+3)
+accuracy_of_svm_with_polynomial_kernel
+```
+```{r}
+#THIS HAS 75% ACCURACY BUT POOR SENSITIVITY
+
+```
+
+```{r}
+#LETS TRY WITH RADIAL KERNAL
+```
+
+```{r}
+classifier = svm(formula = admit ~ .,
+                 data = trainc,
+                 type = 'C-classification',
+                 kernel = 'radial' )
+```
+
+```{r}
+y_pred=predict(classifier,testc)
+```
+
+```{r}
+z=table(y_pred,testc$admit)
+z
+```
+
+```{r}
+#ACCURACY
+accuracy_of_svm_with_radial_kernel=(70+4)/(70+4+22+4)
+accuracy_of_svm_with_radial_kernel
+```
+
+```{r}
+#ACCURACY OF THIS MODEL IS 74%
+```
+
+```{r}
+head(over)
+nrow(over)
+```
+```{r}
+#LETS TRAIN A MODEL ON OVERSAMPLED DATASET AND SEE IF OUR SENSITIVITY INCREASES
+```
+
+```{r}
+library(caTools)
+set.seed(0)
+split =sample.split(results,SplitRatio = 0.8)
+trainc = subset(over,split == TRUE)
+testc = subset(over,split == FALSE)
+```
+
+```{r}
+library(e1071)
+classifier = svm(formula = admit ~ .,
+                 data = trainc,
+                 type = 'C-classification',
+                 kernel = 'linear' )
+```
+
+```{r}
+y_pred=predict(classifier,testc)
+```
+
+```{r}
+z=table(y_pred,testc$admit)
+z
+```
+
+```{r}
+accuracy_of_svm_oversampled_data_linear=(24+23)/(24+24+23+23)
+accuracy_of_svm_oversampled_data_linear
+```
+
+```{r}
+#A ACCURACY OF 50% IS SEEN BUT THIS A IMPROVEMENT IS SENSITIVITY
+#LETS CALCULATE THE SENSITIVITY 
+TP=23
+TN=24
+FP=23
+FN=24
+accuracy=(TP+TN)/(TP+TN+FP+FN)
+accuracy
+specificity=TN/(TN+FP)
+specificity
+sensitiviy_aka_recall=TP/(TP+FN)
+sensitiviy_aka_recall
+precision=TP/(FP+TP)
+precision
+F1_score=2*(sensitiviy_aka_recall)*(precision)/(sensitiviy_aka_recall+precision)
+F1_score
+```
+```{r}
+#A SENSITIVITY OF ABOUT 49% IS SEEN
+```
+
+```{r}
+#LETS SEE FOR A RADIAL KERNEL
+classifier = svm(formula = admit ~ .,
+                 data = trainc,
+                 type = 'C-classification',
+                 kernel = 'radial' )
+```
+
+```{r}
+y_pred=predict(classifier,testc)
+```
+
+```{r}
+z=table(y_pred,testc$admit)
+z
+```
+
+```{r}
+TP=16
+TN=30
+FP=17
+FN=31
+accuracy=(TP+TN)/(TP+TN+FP+FN)
+accuracy
+specificity=TN/(TN+FP)
+specificity
+sensitiviy_aka_recall=TP/(TP+FN)
+sensitiviy_aka_recall
+precision=TP/(FP+TP)
+precision
+F1_score=2*(sensitiviy_aka_recall)*(precision)/(sensitiviy_aka_recall+precision)
+F1_score
+
+```
+
+```{r}
+#AGAIN A SENSITIVITY OF 0.34 AND SPECIFICITY OF 63% IS SEEN
+```
+
+```{r}
+#Determine the accuracy rates for each kind of model 
+#Select the most accurate model 
+#Identify other Machine learning or statistical techniques
+#ALL MODELS/AND STATISTICAL TECHINIQUES WERE SEEN ABOVE /ALL EVALUATION METRICS /AND STATISTICAL TECHNIQUES WERE SEEN
+```
+
+```{r}
+#CHAMPION MODEL
+#IF U TARGET SENSITIVITY
+accuracy_of_random_forest_with_oversampling
+sensitiviy_aka_recall_of_radnom_forest_with_oversampling
+#IF U TARGET ACCURACY/SPECIFICITY
+#THEN RANDOM FOREST IS GIVING A ACCURACY OF 75%
+A=data.frame(accuracy_for_decision_tree,accuracy_for_random_forest,accuracy_of_svm_oversampled_data_linear,accuracy_of_svm_with_polynomial_kernel)
+A
+```
+
+```{r}
+#------------Model buliding/Predictive analysis----------------
+```
+
+```{r}
+#Descriptive: 
+#Categorize the average of grade point into High, Medium, and Low (with admission probability percentages) and plot it on a point chart.  
+```
+
+```{r}
+library(dplyr)
+
+data_1 <- results %>%
+    mutate(gre = case_when(
+        gre < 440 ~ "Low",
+        gre > 440 & gre < 580 ~ "Medium",
+        gre > 580 ~ "High"
+    ))
+```
+```{r}
+head(data_1)
+```
+```{r}
+table(data_1$admit,data_1$gre)
+```
+
+```{r}
+prob_of_admission_if_u_high_gre=78/(78+119)
+prob_of_admission_if_u_high_gre
+prob_of_admission_if_u_low_gre=4/(34+4)
+prob_of_admission_if_u_low_gre
+prob_of_admission_if_u_medium_gre=37/(89+37)
+prob_of_admission_if_u_medium_gre
+```
+
+```{r}
+A=data.frame(prob_of_admission_if_u_high_gre,prob_of_admission_if_u_medium_gre,prob_of_admission_if_u_low_gre)
+A
+```
+```{r}
+library(ggplot2)
+Aptitute_Descriptive = transform(results,
+GreLevels=ifelse(gre<439,"Low",ifelse(gre<579,"Medium","High")))
+View(Aptitute_Descriptive)
+Sum_Apt=aggregate(admit~GreLevels,Aptitute_Descriptive,FUN=sum)
+length_Apt=aggregate(admit~GreLevels,Aptitute_Descriptive,FUN=length)
+Probability_Table = cbind(Sum_Apt,Recs=length_Apt[,2])
+Probability_Table_final = transform(Probability_Table,Probability_Admission =
+admit/Recs)
+Probability_Table_final
+ggplot(Probability_Table_final,aes(x=GreLevels,y=Probability_Admission))+geom_point()
+```
+
